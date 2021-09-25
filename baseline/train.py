@@ -7,7 +7,8 @@ from raif_hack.model import BenchmarkModel
 from raif_hack.settings import MODEL_PARAMS, LOGGING_CONFIG, NUM_FEATURES, CATEGORICAL_OHE_FEATURES,CATEGORICAL_STE_FEATURES,TARGET
 from raif_hack.utils import PriceTypeEnum
 from raif_hack.metrics import metrics_stat
-from raif_hack.features import prepare_categorical
+from raif_hack.features import prepare_features
+from raif_hack.feature_selection import FeatureSelector
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
@@ -41,7 +42,8 @@ if __name__ == "__main__":
         logger.info('Load train df')
         train_df = pd.read_csv(args['d'])
         logger.info(f'Input shape: {train_df.shape}')
-        train_df = prepare_categorical(train_df)
+        train_df = prepare_features(train_df)  # nan features filling
+        train_df = FeatureSelector.select_features(train_df)
 
         X_offer = train_df[train_df.price_type == PriceTypeEnum.OFFER_PRICE][NUM_FEATURES+CATEGORICAL_OHE_FEATURES+CATEGORICAL_STE_FEATURES]
         y_offer = train_df[train_df.price_type == PriceTypeEnum.OFFER_PRICE][TARGET]
@@ -49,7 +51,7 @@ if __name__ == "__main__":
         y_manual = train_df[train_df.price_type == PriceTypeEnum.MANUAL_PRICE][TARGET]
         logger.info(f'X_offer {X_offer.shape}  y_offer {y_offer.shape}\tX_manual {X_manual.shape} y_manual {y_manual.shape}')
         model = BenchmarkModel(numerical_features=NUM_FEATURES, ohe_categorical_features=CATEGORICAL_OHE_FEATURES,
-                                  ste_categorical_features=CATEGORICAL_STE_FEATURES, model_params=MODEL_PARAMS)
+                               ste_categorical_features=CATEGORICAL_STE_FEATURES, model_params=MODEL_PARAMS)
         logger.info('Fit model')
         model.fit(X_offer, y_offer, X_manual, y_manual)
         logger.info('Save model')

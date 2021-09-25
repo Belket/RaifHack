@@ -5,6 +5,9 @@ CATEGORICAL_STE_FEATURES = ['region', 'city', 'realty_type']
 # признаки, для которых применяем one hot encoding
 CATEGORICAL_OHE_FEATURES = []
 
+# экспертно лишние фичи
+EXPERT_EXTERNAL_FEATURES = []
+
 # численные признаки
 NUM_FEATURES = ['lat', 'lng', 'osm_amenity_points_in_0.001',
        'osm_amenity_points_in_0.005', 'osm_amenity_points_in_0.0075',
@@ -40,6 +43,11 @@ NUM_FEATURES = ['lat', 'lng', 'osm_amenity_points_in_0.001',
        'reform_house_population_1000', 'reform_house_population_500',
        'reform_mean_floor_count_1000', 'reform_mean_floor_count_500',
        'reform_mean_year_building_1000', 'reform_mean_year_building_500','total_square']
+
+
+# Пайплайн отбора признаков
+SELECTORS_PIPE = ['expert_review', 'stepwize_regression']
+
 
 MODEL_PARAMS = dict(
             n_estimators=2000,

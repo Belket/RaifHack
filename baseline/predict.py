@@ -1,10 +1,12 @@
 import argparse
 import logging.config
 import pandas as pd
-from raif_hack.features import prepare_categorical
+from raif_hack.features import prepare_features
 from traceback import format_exc
 from raif_hack.model import BenchmarkModel
 from raif_hack.settings import LOGGING_CONFIG, NUM_FEATURES, CATEGORICAL_OHE_FEATURES, CATEGORICAL_STE_FEATURES
+from raif_hack.feature_selection import FeatureSelector
+
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
@@ -39,7 +41,8 @@ if __name__ == "__main__":
         logger.info('Load test df')
         test_df = pd.read_csv(args['d'])
         logger.info(f'Input shape: {test_df.shape}')
-        test_df = prepare_categorical(test_df)
+        test_df = prepare_features(test_df)
+        test_df = FeatureSelector.select_features(test_df)
 
         logger.info('Load model')
         model = BenchmarkModel.load(args['mp'])
