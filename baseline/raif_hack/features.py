@@ -1,6 +1,7 @@
 import pandas as pd
 from raif_hack.utils import UNKNOWN_VALUE
-from raif_hack.utils import NanFighter
+from raif_hack.nan_fighter import NanFighter
+
 
 def prepare_features(df: pd.DataFrame) -> pd.DataFrame:
     """

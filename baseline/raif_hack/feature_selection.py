@@ -1,10 +1,17 @@
 from copy import deepcopy
 import numpy as np
 import statsmodels.api as sm
-from settings import EXPERT_EXTERNAL_FEATURES, SELECTORS_PIPE
+from raif_hack.settings import EXPERT_EXTERNAL_FEATURES, SELECTORS_PIPE
+from raif_hack.settings import NUM_FEATURES, CATEGORICAL_OHE_FEATURES, CATEGORICAL_STE_FEATURES, TARGET
 
 
 class FeatureSelector:
+
+    @staticmethod
+    def update_global_features_lists(dropped_features):
+        NUM_FEATURES = list(set(NUM_FEATURES) - set(dropped_features))
+        CATEGORICAL_OHE_FEATURES = list(set(CATEGORICAL_OHE_FEATURES) - set(dropped_features))
+        CATEGORICAL_STE_FEATURES = list(set(CATEGORICAL_STE_FEATURES) - set(dropped_features))
 
     @staticmethod
     def expert_review(df):
@@ -22,7 +29,6 @@ class FeatureSelector:
 
         categorial_features = [
             'city',
-            'floor',
             'id',
             'osm_city_nearest_name',
             'region',
@@ -41,8 +47,9 @@ class FeatureSelector:
             X = df_temp[current_columns].astype(float)
             y = list(df_temp[target])
             results = sm.OLS(y, X).fit()
+            FeatureSelector.update_global_features_lists(list((results.pvalues.iloc[np.where(results.pvalues > p_value_threshold)]).index))
             appropriate_features = list((results.pvalues.iloc[np.where(results.pvalues <= p_value_threshold)]).index)
-        return appropriate_features
+        return df[appropriate_features + categorial_features]
 
     @staticmethod
     def select_features(df):

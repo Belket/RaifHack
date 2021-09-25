@@ -1,12 +1,11 @@
+# -------------- FEATURES SECTION ----------------
+
 TARGET = 'per_square_meter_price'
 # признаки (или набор признаков), для которых применяем smoothed target encoding
 CATEGORICAL_STE_FEATURES = ['region', 'city', 'realty_type']
 
 # признаки, для которых применяем one hot encoding
 CATEGORICAL_OHE_FEATURES = []
-
-# экспертно лишние фичи
-EXPERT_EXTERNAL_FEATURES = []
 
 # численные признаки
 NUM_FEATURES = ['lat', 'lng', 'osm_amenity_points_in_0.001',
@@ -45,9 +44,16 @@ NUM_FEATURES = ['lat', 'lng', 'osm_amenity_points_in_0.001',
        'reform_mean_year_building_1000', 'reform_mean_year_building_500','total_square']
 
 
+# -------------- FEATURE SELECTION SECTION ----------------
+
+# экспертно лишние фичи
+EXPERT_EXTERNAL_FEATURES = []
+
 # Пайплайн отбора признаков
 SELECTORS_PIPE = ['expert_review', 'stepwize_regression']
 
+
+# -------------- MODEL SECTION ----------------
 
 MODEL_PARAMS = dict(
             n_estimators=2000,
@@ -59,6 +65,9 @@ MODEL_PARAMS = dict(
             n_jobs=1,
             random_state=563,
         )
+
+
+# -------------- LOGGING CONFIG SECTION ----------------
 
 LOGGING_CONFIG = {
     "version": 1,

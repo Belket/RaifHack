@@ -44,7 +44,7 @@ class BenchmarkModel():
         self.preprocessor = ColumnTransformer(transformers=[
             ('num', StandardScaler(), self.num_features),
             ('ohe', OneHotEncoder(), self.ohe_cat_features),
-            ('ste', OrdinalEncoder(handle_unknown='use_encoded_value',unknown_value=-1), self.ste_cat_features)])
+            ('ste', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), self.ste_cat_features)])
 
         self.model = LGBMRegressor(**model_params)
 
